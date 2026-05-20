@@ -29,11 +29,11 @@ func TestEmails(t *testing.T) {
 	tt := Test{Email: email}
 	err := scrub.Struct(context.Background(), &tt)
 	Equal(t, err, nil)
-	Equal(t, tt.Email, "<<scrubbed::email::sha1::5131512f2d165ca283b055bc6f32bc01dd23121e>>@gmail.com")
+	Equal(t, tt.Email, "<<scrubbed::email::sha1::c52a47d4f3cde7c83046fc1fc8f208df74833cfa>>@gmail.com")
 
 	err = scrub.Field(context.Background(), &email, "emails")
 	Equal(t, err, nil)
-	Equal(t, email, "<<scrubbed::email::sha1::5131512f2d165ca283b055bc6f32bc01dd23121e>>@gmail.com")
+	Equal(t, email, "<<scrubbed::email::sha1::c52a47d4f3cde7c83046fc1fc8f208df74833cfa>>@gmail.com")
 
 	var iface interface{}
 	err = scrub.Field(context.Background(), &iface, "emails")
@@ -43,7 +43,15 @@ func TestEmails(t *testing.T) {
 	iface = "Dean.Karn@gmail.com"
 	err = scrub.Field(context.Background(), &iface, "emails")
 	Equal(t, err, nil)
-	Equal(t, iface, "<<scrubbed::email::sha1::5131512f2d165ca283b055bc6f32bc01dd23121e>>@gmail.com")
+	Equal(t, iface, "<<scrubbed::email::sha1::c52a47d4f3cde7c83046fc1fc8f208df74833cfa>>@gmail.com")
+
+	emailText := "alice@example.com bob@example.com"
+	err = scrub.Field(context.Background(), &emailText, "emails")
+	Equal(t, err, nil)
+	Equal(t, emailText,
+		"<<scrubbed::email::sha1::522b276a356bdf39013dfabea2cd43e141ecc9e8>>@example.com "+
+			"<<scrubbed::email::sha1::48181acd22b3edaebc8a447868a7df7ce629920a>>@example.com",
+	)
 }
 
 func TestText(t *testing.T) {
